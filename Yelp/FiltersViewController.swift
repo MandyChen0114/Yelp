@@ -12,13 +12,19 @@ import UIKit
   @objc optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: AnyObject])
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategorySwitchCellDelegate {
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategorySwitchCellDelegate, DealCellDelegate, DistanceCellDelegate {
   @IBOutlet weak var tableView: UITableView!
 
+  var sections: [[String: Any]] = []
   var categories: [[String: String]] = []
   var categorySwitchStates = [Int:Bool]()
-  var sections: [[String: Any]] = []
+  var dealSwitchState : Bool = false
+  var distanceStates = (selectedRowIndex: 0, selectedRowLabel: "Auto")
   
+  var isDistanceExpanded = false
+  
+  let uncheckedImage = UIImage(named: "uncheckedBox")
+  let checkedImage = UIImage(named: "checkedBox")
   
   weak var delegate:FiltersViewControllerDelegate?
   
@@ -55,6 +61,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       filters["categories"] = selectedCategories as AnyObject?
     }
     
+    filters["deal"] = dealSwitchState as AnyObject?
+    filters["distance"] = distanceStates.selectedRowIndex as AnyObject?
+    
     delegate?.filtersViewController?(filtersViewController: self, didUpdateFilters: filters)
     dismiss(animated: true, completion: nil)
   }
@@ -65,18 +74,52 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    if section == 1 && !isDistanceExpanded {
+      return 1
+    }
     return sections[section]["rowNum"] as! Int
   }
   
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if(indexPath.section == 3){
+    
+    if indexPath.section == 0 {
+      let cell = tableView.dequeueReusableCell(withIdentifier: "DealCell", for: indexPath) as! DealCell
+      cell.dealLabel.text = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
+      cell.dealDelegate = self
+      cell.dealSwitch.isOn = dealSwitchState
+    
+      return cell
+      
+    } else if indexPath.section == 1 {
+      if isDistanceExpanded {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DistanceCell", for: indexPath) as! DistanceCell
+        cell.label.text = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
+        cell.distanceDelegate = self
+        
+        if distanceStates.selectedRowIndex == indexPath.row {
+          cell.button.setImage(checkedImage, for: UIControlState.normal)
+        } else {
+          cell.button.setImage(uncheckedImage, for: UIControlState.normal)
+        }
+        return cell
+      } else {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+        cell.label.text = distanceStates.selectedRowLabel
+        return cell
+      }
+      
+      
+      
+      
+    } else if indexPath.section == 3 {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CategorySwitchCell", for: indexPath) as! CategorySwitchCell
       cell.switchLabel.text = categories[indexPath.row]["name"]
       cell.delegate = self
       cell.onSwitch.isOn = categorySwitchStates[indexPath.row] ?? false
       
       return cell
+      
     } else {
       let cell = UITableViewCell()
       return cell
@@ -87,16 +130,40 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     return sections[section]["title"] as? String
   }
   
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    
+    if indexPath.section == 1 {
+      isDistanceExpanded = !isDistanceExpanded
+      tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
+    }
+  }
+  
+  
   func categorySwitchCell(categorySwitchCell: CategorySwitchCell, didChangeValue : Bool) {
     let indexPath = tableView.indexPath(for: categorySwitchCell)!
     categorySwitchStates[indexPath.row] = didChangeValue
   }
   
+  func dealCell(dealCell: DealCell, didChangeValue: Bool) {
+    dealSwitchState = didChangeValue
+  }
+  
+  func distanceCell(distanceCell: DistanceCell, didChangeValue: Bool) {
+    if didChangeValue {
+      let indexPath = tableView.indexPath(for: distanceCell)!
+      let selectedRowLabel = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
+      distanceStates = (selectedRowIndex: indexPath.row, selectedRowLabel: selectedRowLabel)
+      isDistanceExpanded = !isDistanceExpanded
+      tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
+    }
+  }
+  
   func sectionData() -> [[String: Any]] {
-    return [["title": "", "rowNum": 1],
-            ["title": "Distance", "rowNum": 5],
-            ["title": "Sort By", "rowNum": 3],
-            ["title": "Category", "rowNum": categories.count]]
+    return [["title": "", "rowNum": 1, "rowLabel" : ["Offering a Deal"]],
+            ["title": "Distance", "rowNum": 5, "rowLabel" : ["Auto","0.3 miles", "1 mile","5 mile","20 miles"]],
+            ["title": "Sort By", "rowNum": 3, "rowLabel": ["Best Match","Distance","High Rate"]],
+            ["title": "Category", "rowNum": categories.count, "rowLabel":[]]]
   }
   
   func yelpCategories() -> [[String:String]] {

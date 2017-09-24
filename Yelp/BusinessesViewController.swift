@@ -13,8 +13,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
   var businesses: [Business]!
   var currSearch = (term: "", deals: false, distance: 0.0, sort: YelpSortMode.bestMatched, category: [String]())
   var pageOffSet = 0
+  let distanceMeterMap = [0, 0.3 * 1609.34, 1609.34, 5 * 1609.34 , 20 * 1609.34]
   
   @IBOutlet weak var tableView: UITableView!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
       
@@ -75,8 +77,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
 
   func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
     let categories = filters["categories"] as? [String]
+    let deal = filters["deal"] as? Bool
+    let distanceIndex = filters["distance"] as? Int
     
-    search(term: "Restaurants", sort: nil, categories: categories, deals: nil, distance: nil)
+    search(term: "", sort: nil, categories: categories, deals: deal, distance: distanceMeterMap[distanceIndex!])
   }
     
 }
