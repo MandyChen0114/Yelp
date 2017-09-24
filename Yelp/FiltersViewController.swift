@@ -17,10 +17,13 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
 
   var sections: [[String: Any]] = []
   var categories: [[String: String]] = []
+  var currFilters: (deal: Bool, distanceRowIndex: Int, sortByRowIndex: Int, categoryStates:[Int:Bool])!
+  
   var categorySwitchStates = [Int:Bool]()
   var dealSwitchState : Bool = false
   var distanceStates = (selectedRowIndex: 0, selectedRowLabel: "Auto")
   var sortByStates = (selectedRowIndex: 0, selectedRowLabel: "Best Match")
+  
   var isDistanceExpanded = false
   var isSortByExpanded = false
   
@@ -39,9 +42,20 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
 
     tableView.dataSource = self
     tableView.delegate = self
-
+    tableView.rowHeight = UITableViewAutomaticDimension
+    tableView.estimatedRowHeight = 45
+    
     categories = yelpCategories()
     sections = sectionData()
+    
+    if currFilters != nil {
+      dealSwitchState = currFilters.deal
+      distanceStates.selectedRowIndex = currFilters.distanceRowIndex
+      distanceStates.selectedRowLabel = getLabelByIndexPath(section: DISTANCE_SECTION_INDEX, row: distanceStates.selectedRowIndex)
+      sortByStates.selectedRowIndex = currFilters.sortByRowIndex
+      sortByStates.selectedRowLabel = getLabelByIndexPath(section: SORT_BY_SECTION_INDEX, row: sortByStates.selectedRowIndex)
+      categorySwitchStates = currFilters.categoryStates
+    }
   }
 
   override func didReceiveMemoryWarning() {
@@ -66,7 +80,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     if selectedCategories.count > 0 {
       filters["categories"] = selectedCategories as AnyObject?
     }
-    
+    filters["categoryStates"] = categorySwitchStates as AnyObject?
     filters["deal"] = dealSwitchState as AnyObject?
     filters["distance"] = distanceStates.selectedRowIndex as AnyObject?
     filters["sortBy"] = sortByStates.selectedRowIndex as AnyObject?
@@ -92,6 +106,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     return section == DISTANCE_SECTION_INDEX || section == SORT_BY_SECTION_INDEX
   }
 
+  func getLabelByIndexPath(section: Int, row: Int) -> String {
+    return (sections[section]["rowLabel"] as! [String])[row]
+  }
+  
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if isDistanceCollapsed(section: section) || isSortByCollapsed(section: section) {
       return 1
@@ -105,23 +123,29 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     if indexPath.section == DEAL_SECTION_INDEX {
       
       let cell = tableView.dequeueReusableCell(withIdentifier: "DealCell", for: indexPath) as! DealCell
-      cell.dealLabel.text = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
+      cell.dealLabel.text = getLabelByIndexPath(section: indexPath.section, row: indexPath.row)
       cell.dealDelegate = self
       cell.dealSwitch.isOn = dealSwitchState
       return cell
 
     } else if isCheckBoxCell(section: indexPath.section) {
       
-      if isDistanceCollapsed(section: indexPath.section) || isSortByCollapsed(section: indexPath.section) {
+      if isDistanceCollapsed(section: indexPath.section) {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
         cell.label.text = distanceStates.selectedRowLabel
         return cell
         
+      } else if isSortByCollapsed(section: indexPath.section) {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+        cell.label.text = sortByStates.selectedRowLabel
+        return cell
+        
       } else {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckBoxCell", for: indexPath) as! CheckBoxCell
-        cell.label.text = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
+        cell.label.text = getLabelByIndexPath(section: indexPath.section, row: indexPath.row)
         cell.checkboxDelegate = self
         
         if distanceStates.selectedRowIndex == indexPath.row {
@@ -175,7 +199,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func checkboxCell(checkboxCell: CheckBoxCell, didChangeValue: Bool) {
     if didChangeValue {
       let indexPath = tableView.indexPath(for: checkboxCell)!
-      let selectedRowLabel = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
+      let selectedRowLabel = getLabelByIndexPath(section: indexPath.section, row: indexPath.row)
       
       if indexPath.section == DISTANCE_SECTION_INDEX {
         distanceStates = (selectedRowIndex: indexPath.row, selectedRowLabel: selectedRowLabel)
