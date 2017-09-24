@@ -12,7 +12,7 @@ import UIKit
   @objc optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: AnyObject])
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategorySwitchCellDelegate, DealCellDelegate, DistanceCellDelegate {
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategorySwitchCellDelegate, DealCellDelegate, CheckBoxCellDelegate {
   @IBOutlet weak var tableView: UITableView!
 
   var sections: [[String: Any]] = []
@@ -20,11 +20,17 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   var categorySwitchStates = [Int:Bool]()
   var dealSwitchState : Bool = false
   var distanceStates = (selectedRowIndex: 0, selectedRowLabel: "Auto")
-  
+  var sortByStates = (selectedRowIndex: 0, selectedRowLabel: "Best Match")
   var isDistanceExpanded = false
+  var isSortByExpanded = false
   
   let uncheckedImage = UIImage(named: "uncheckedBox")
   let checkedImage = UIImage(named: "checkedBox")
+  
+  let DEAL_SECTION_INDEX = 0
+  let DISTANCE_SECTION_INDEX = 1
+  let SORT_BY_SECTION_INDEX = 2
+  let CATEGORY_SECTION_INDEX = 3
   
   weak var delegate:FiltersViewControllerDelegate?
   
@@ -63,6 +69,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     filters["deal"] = dealSwitchState as AnyObject?
     filters["distance"] = distanceStates.selectedRowIndex as AnyObject?
+    filters["sortBy"] = sortByStates.selectedRowIndex as AnyObject?
     
     delegate?.filtersViewController?(filtersViewController: self, didUpdateFilters: filters)
     dismiss(animated: true, completion: nil)
@@ -73,8 +80,20 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     return 4
   }
   
+  func isDistanceCollapsed(section: Int) -> Bool {
+    return section == DISTANCE_SECTION_INDEX && !isDistanceExpanded
+  }
+  
+  func isSortByCollapsed(section: Int) -> Bool {
+    return section == SORT_BY_SECTION_INDEX && !isSortByExpanded
+  }
+
+  func isCheckBoxCell(section: Int) -> Bool {
+    return section == DISTANCE_SECTION_INDEX || section == SORT_BY_SECTION_INDEX
+  }
+
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if section == 1 && !isDistanceExpanded {
+    if isDistanceCollapsed(section: section) || isSortByCollapsed(section: section) {
       return 1
     }
     return sections[section]["rowNum"] as! Int
@@ -83,19 +102,27 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
-    if indexPath.section == 0 {
+    if indexPath.section == DEAL_SECTION_INDEX {
+      
       let cell = tableView.dequeueReusableCell(withIdentifier: "DealCell", for: indexPath) as! DealCell
       cell.dealLabel.text = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
       cell.dealDelegate = self
       cell.dealSwitch.isOn = dealSwitchState
-    
       return cell
+
+    } else if isCheckBoxCell(section: indexPath.section) {
       
-    } else if indexPath.section == 1 {
-      if isDistanceExpanded {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DistanceCell", for: indexPath) as! DistanceCell
+      if isDistanceCollapsed(section: indexPath.section) || isSortByCollapsed(section: indexPath.section) {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+        cell.label.text = distanceStates.selectedRowLabel
+        return cell
+        
+      } else {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CheckBoxCell", for: indexPath) as! CheckBoxCell
         cell.label.text = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
-        cell.distanceDelegate = self
+        cell.checkboxDelegate = self
         
         if distanceStates.selectedRowIndex == indexPath.row {
           cell.button.setImage(checkedImage, for: UIControlState.normal)
@@ -103,16 +130,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
           cell.button.setImage(uncheckedImage, for: UIControlState.normal)
         }
         return cell
-      } else {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
-        cell.label.text = distanceStates.selectedRowLabel
-        return cell
+
       }
-      
-      
-      
-      
-    } else if indexPath.section == 3 {
+    } else if indexPath.section == CATEGORY_SECTION_INDEX {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CategorySwitchCell", for: indexPath) as! CategorySwitchCell
       cell.switchLabel.text = categories[indexPath.row]["name"]
       cell.delegate = self
@@ -133,8 +153,11 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
     
-    if indexPath.section == 1 {
+    if indexPath.section == DISTANCE_SECTION_INDEX {
       isDistanceExpanded = !isDistanceExpanded
+      tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
+    } else if indexPath.section == SORT_BY_SECTION_INDEX {
+      isSortByExpanded = !isSortByExpanded
       tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
     }
   }
@@ -149,12 +172,19 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     dealSwitchState = didChangeValue
   }
   
-  func distanceCell(distanceCell: DistanceCell, didChangeValue: Bool) {
+  func checkboxCell(checkboxCell: CheckBoxCell, didChangeValue: Bool) {
     if didChangeValue {
-      let indexPath = tableView.indexPath(for: distanceCell)!
+      let indexPath = tableView.indexPath(for: checkboxCell)!
       let selectedRowLabel = (sections[indexPath.section]["rowLabel"] as! [String])[indexPath.row]
-      distanceStates = (selectedRowIndex: indexPath.row, selectedRowLabel: selectedRowLabel)
-      isDistanceExpanded = !isDistanceExpanded
+      
+      if indexPath.section == DISTANCE_SECTION_INDEX {
+        distanceStates = (selectedRowIndex: indexPath.row, selectedRowLabel: selectedRowLabel)
+        isDistanceExpanded = !isDistanceExpanded
+      } else if indexPath.section == SORT_BY_SECTION_INDEX {
+        sortByStates = (selectedRowIndex: indexPath.row, selectedRowLabel: selectedRowLabel)
+        isSortByExpanded = !isSortByExpanded
+      }
+
       tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
     }
   }
@@ -162,7 +192,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func sectionData() -> [[String: Any]] {
     return [["title": "", "rowNum": 1, "rowLabel" : ["Offering a Deal"]],
             ["title": "Distance", "rowNum": 5, "rowLabel" : ["Auto","0.3 miles", "1 mile","5 mile","20 miles"]],
-            ["title": "Sort By", "rowNum": 3, "rowLabel": ["Best Match","Distance","High Rate"]],
+            ["title": "Sort By", "rowNum": 3, "rowLabel": ["Best Match","Distance","Rating"]],
             ["title": "Category", "rowNum": categories.count, "rowLabel":[]]]
   }
   

@@ -79,8 +79,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     let categories = filters["categories"] as? [String]
     let deal = filters["deal"] as? Bool
     let distanceIndex = filters["distance"] as? Int
-    
-    search(term: "", sort: nil, categories: categories, deals: deal, distance: distanceMeterMap[distanceIndex!])
+    let sortMode = filters["sortBy"] as? Int
+
+    search(term: "", sort: sortMode.map { YelpSortMode(rawValue: $0) }!, categories: categories, deals: deal, distance: distanceMeterMap[distanceIndex!])
   }
     
 }

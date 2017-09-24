@@ -216,7 +216,7 @@
                                             <outlet property="dealSwitch" destination="eJ6-XI-fAf" id="0OA-tT-0AY"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DistanceCell" id="SZz-Ex-PBD" customClass="DistanceCell" customModule="Yelp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CheckBoxCell" id="SZz-Ex-PBD" customClass="CheckBoxCell" customModule="Yelp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="156" width="375" height="64"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SZz-Ex-PBD" id="X2s-tT-W23">
@@ -241,8 +241,8 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="button" destination="YBZ-lA-JKd" id="isk-ET-6e8"/>
-                                            <outlet property="label" destination="nE8-qh-OTg" id="ozJ-oz-rxo"/>
+                                            <outlet property="button" destination="YBZ-lA-JKd" id="UK1-Ce-LHA"/>
+                                            <outlet property="label" destination="nE8-qh-OTg" id="Iy2-Kl-qFj"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DropDownCell" id="OgQ-Xi-prg" customClass="DropDownCell" customModule="Yelp" customModuleProvider="target">
@@ -314,7 +314,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7kd-Ds-khX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4442.3999999999996" y="357.57121439280365"/>
+            <point key="canvasLocation" x="4441.5" y="357.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="1ow-pZ-1Wf">

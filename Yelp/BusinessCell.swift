@@ -21,7 +21,13 @@ class BusinessCell: UITableViewCell {
   var business: Business! {
     didSet {
       nameLabel.text = business.name
-      thumbImageView.setImageWith(business.imageURL!)
+      
+      if let imageUrl = business.imageURL {
+        thumbImageView.setImageWith(imageUrl)
+      } else {
+        thumbImageView.image = UIImage(named: "noThumbImage")
+      }
+      
       categoriesLabel.text = business.categories
       addressLabel.text = business.address
       reviewsCountLabel.text = "\(business.reviewCount!)Reviews"
@@ -32,23 +38,17 @@ class BusinessCell: UITableViewCell {
   
   override func awakeFromNib() {
     super.awakeFromNib()
-    // Initialization code
+
     thumbImageView.layer.cornerRadius = 5
     thumbImageView.clipsToBounds = true
-//  uncomment this line if meet ios truncating label bug
-//  nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
   }
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    
-//  nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
   }
   
   override func setSelected(_ selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
-
-    // Configure the view for the selected state
   }
 
 }

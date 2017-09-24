@@ -1,5 +1,5 @@
 //
-//  DistanceCell.swift
+//  CheckBoxCell.swift
 //  Yelp
 //
 //  Created by Mandy Chen on 9/23/17.
@@ -8,16 +8,15 @@
 
 import UIKit
 
-@objc protocol DistanceCellDelegate {
-  @objc optional func distanceCell(distanceCell: DistanceCell, didChangeValue:Bool)
+@objc protocol CheckBoxCellDelegate {
+  @objc optional func checkboxCell(checkboxCell: CheckBoxCell, didChangeValue:Bool)
 }
 
-class DistanceCell: UITableViewCell {
-
+class CheckBoxCell: UITableViewCell {
   @IBOutlet weak var label: UILabel!
   
   @IBOutlet weak var button: UIButton!
-  weak var distanceDelegate:DistanceCellDelegate?
+  weak var checkboxDelegate:CheckBoxCellDelegate?
   
   let uncheckedImage = UIImage(named: "uncheckedBox")
   let checkedImage = UIImage(named: "checkedBox")
@@ -26,11 +25,11 @@ class DistanceCell: UITableViewCell {
     super.awakeFromNib()
     
     button.setImage(uncheckedImage, for: UIControlState.normal)
-    button.addTarget(self, action: #selector(DistanceCell.distanceValueChanged), for: UIControlEvents.touchUpInside)
+    button.addTarget(self, action: #selector(CheckBoxCell.checkboxValueChanged), for: UIControlEvents.touchUpInside)
   
   }
 
-  func distanceValueChanged() {
+  func checkboxValueChanged() {
     var isSelected = false
     if button.currentImage == uncheckedImage {
       button.setImage(checkedImage, for: UIControlState.normal)
@@ -40,7 +39,7 @@ class DistanceCell: UITableViewCell {
       isSelected = false
     }
     
-    distanceDelegate?.distanceCell?(distanceCell: self, didChangeValue: isSelected)
+    checkboxDelegate?.checkboxCell?(checkboxCell: self, didChangeValue: isSelected)
   }
   
   
