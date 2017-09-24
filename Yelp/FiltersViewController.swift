@@ -17,6 +17,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
 
   var categories: [[String: String]] = []
   var categorySwitchStates = [Int:Bool]()
+  var sections: [[String: Any]] = []
+  
   
   weak var delegate:FiltersViewControllerDelegate?
   
@@ -27,6 +29,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     tableView.delegate = self
 
     categories = yelpCategories()
+    sections = sectionData()
   }
 
   override func didReceiveMemoryWarning() {
@@ -56,17 +59,13 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     dismiss(animated: true, completion: nil)
   }
   
+  
   func numberOfSections(in tableView: UITableView) -> Int {
     return 4
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    switch section {
-    case 3:
-      return categories.count
-    default:
-      return 0
-    }
+    return sections[section]["rowNum"] as! Int
   }
   
   
@@ -84,11 +83,21 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
   }
   
+  func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    return sections[section]["title"] as? String
+  }
+  
   func categorySwitchCell(categorySwitchCell: CategorySwitchCell, didChangeValue : Bool) {
     let indexPath = tableView.indexPath(for: categorySwitchCell)!
     categorySwitchStates[indexPath.row] = didChangeValue
   }
   
+  func sectionData() -> [[String: Any]] {
+    return [["title": "", "rowNum": 1],
+            ["title": "Distance", "rowNum": 5],
+            ["title": "Sort By", "rowNum": 3],
+            ["title": "Category", "rowNum": categories.count]]
+  }
   
   func yelpCategories() -> [[String:String]] {
     return [["name" : "Afghan", "code": "afghani"],
