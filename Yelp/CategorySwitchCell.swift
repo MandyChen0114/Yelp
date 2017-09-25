@@ -17,11 +17,16 @@ class CategorySwitchCell: UITableViewCell {
 
   @IBOutlet weak var onSwitch: DesignableSwitch!
   @IBOutlet weak var switchLabel: UILabel!
+  @IBOutlet weak var switchView: UIView!
   
   weak var delegate:CategorySwitchCellDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
+    
+    switchView.layer.cornerRadius = 5
+    switchView.layer.borderColor = UIColor.darkGray.cgColor
+    switchView.layer.borderWidth = 0.3
     
     onSwitch.thumbTintColor = UIColor.init(patternImage: UIImage(named: "yelpIcon")!)
     onSwitch.addTarget(self, action: #selector(CategorySwitchCell.switchValueChanged), for: UIControlEvents.valueChanged)

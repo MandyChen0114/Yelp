@@ -202,6 +202,32 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     return sections[section]["title"] as? String
   }
   
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
+    headerView.backgroundColor = .white
+    headerView.sizeToFit()
+    
+    let label = UILabel(frame: CGRect(x: 10, y: 10, width: view.frame.width-10, height: headerView.frame.height-18))
+    let labelText = sections[section]["title"] as? String
+    let labelAttributes : [String: Any] = [
+      NSFontAttributeName: UIFont(name: "Helvetica-bold", size: 16.0)! ]
+    label.attributedText = NSAttributedString( string: labelText!, attributes: labelAttributes )
+
+    headerView.addSubview(label)
+
+    return headerView
+  }
+  
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    if section != 0 {
+      return 50
+    } else {
+      return 0
+    }
+    
+  }
+  
+  
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
     

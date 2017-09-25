@@ -11,9 +11,15 @@ import UIKit
 class DropDownCell: UITableViewCell {
 
   @IBOutlet weak var label: UILabel!
+  @IBOutlet weak var dropDownView: UIView!
+  
+  
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+      dropDownView.layer.cornerRadius = 5
+      dropDownView.layer.borderColor = UIColor.darkGray.cgColor
+      dropDownView.layer.borderWidth = 0.3
+
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

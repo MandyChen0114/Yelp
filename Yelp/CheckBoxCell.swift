@@ -14,8 +14,9 @@ import UIKit
 
 class CheckBoxCell: UITableViewCell {
   @IBOutlet weak var label: UILabel!
-  
+  @IBOutlet weak var checkBoxView: UIView!
   @IBOutlet weak var button: UIButton!
+  
   weak var checkboxDelegate:CheckBoxCellDelegate?
   
   let uncheckedImage = UIImage(named: "uncheckedBox")
@@ -24,6 +25,10 @@ class CheckBoxCell: UITableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     
+    checkBoxView.layer.cornerRadius = 5
+    checkBoxView.layer.borderColor = UIColor.darkGray.cgColor
+    checkBoxView.layer.borderWidth = 0.3
+
     button.setImage(uncheckedImage, for: UIControlState.normal)
     button.addTarget(self, action: #selector(CheckBoxCell.checkboxValueChanged), for: UIControlEvents.touchUpInside)
   
