@@ -139,6 +139,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       
       let cell = tableView.dequeueReusableCell(withIdentifier: "DealCell", for: indexPath) as! DealCell
       cell.dealLabel.text = getLabelByIndexPath(section: indexPath.section, row: indexPath.row)
+      
       cell.dealDelegate = self
       cell.dealSwitch.isOn = dealSwitchState
       return cell
