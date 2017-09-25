@@ -15,13 +15,14 @@ import UIKit
 class DealCell: UITableViewCell {
 
   @IBOutlet weak var dealLabel: UILabel!
-  @IBOutlet weak var dealSwitch: UISwitch!
+  @IBOutlet weak var dealSwitch: DesignableSwitch!
   
   weak var dealDelegate:DealCellDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
     
+    dealSwitch.thumbTintColor = UIColor.init(patternImage: UIImage(named: "yelpIcon")!)
     dealSwitch.addTarget(self, action: #selector(DealCell.dealValueChanged), for: UIControlEvents.valueChanged)
   }
 

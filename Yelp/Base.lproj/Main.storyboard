@@ -129,6 +129,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Yelp" id="SnV-ke-OBn">
                         <barButtonItem key="leftBarButtonItem" title="Filter" id="NxM-cb-kGN">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <segue destination="i58-vE-8us" kind="presentation" id="WNE-vu-Xrh"/>
                             </connections>
@@ -166,19 +167,24 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Afghan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T6e-zp-OIf">
-                                                    <rect key="frame" x="21" y="21" width="55" height="21"/>
+                                                    <rect key="frame" x="21" y="13" width="55" height="38"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y5c-Ca-VMh">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" onImage="yelpIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Y5c-Ca-VMh" customClass="DesignableSwitch" customModule="Yelp" customModuleProvider="target">
                                                     <rect key="frame" x="293" y="16" width="51" height="31"/>
+                                                    <color key="onTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="yelpIcon"/>
+                                                    </userDefinedRuntimeAttributes>
                                                 </switch>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="T6e-zp-OIf" firstAttribute="leading" secondItem="kyF-cC-eRn" secondAttribute="leading" constant="21" id="Bds-e2-O9b"/>
                                                 <constraint firstItem="Y5c-Ca-VMh" firstAttribute="centerY" secondItem="kyF-cC-eRn" secondAttribute="centerY" id="ClR-2t-imp"/>
                                                 <constraint firstItem="T6e-zp-OIf" firstAttribute="centerY" secondItem="kyF-cC-eRn" secondAttribute="centerY" id="Rkj-jT-ZFV"/>
+                                                <constraint firstAttribute="bottom" secondItem="T6e-zp-OIf" secondAttribute="bottom" constant="13" id="YvS-Tn-m0b"/>
                                                 <constraint firstAttribute="trailing" secondItem="Y5c-Ca-VMh" secondAttribute="trailing" constant="33" id="vfd-Iv-LEw"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -195,13 +201,17 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Offering a Deal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hOq-UN-2Ae">
-                                                    <rect key="frame" x="13" y="21" width="115" height="21"/>
+                                                    <rect key="frame" x="13" y="13" width="115" height="37.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eJ6-XI-fAf">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" onImage="yelpIcon" offImage="offSwitchThumbImage" translatesAutoresizingMaskIntoConstraints="NO" id="eJ6-XI-fAf" customClass="DesignableSwitch" customModule="Yelp" customModuleProvider="target">
                                                     <rect key="frame" x="301" y="16" width="51" height="31"/>
+                                                    <color key="onTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="yelpIcon"/>
+                                                    </userDefinedRuntimeAttributes>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -209,6 +219,7 @@
                                                 <constraint firstItem="hOq-UN-2Ae" firstAttribute="centerY" secondItem="AFl-hy-cfj" secondAttribute="centerY" id="aeD-by-Daa"/>
                                                 <constraint firstAttribute="trailing" secondItem="eJ6-XI-fAf" secondAttribute="trailing" constant="25" id="eAY-y4-sRD"/>
                                                 <constraint firstItem="hOq-UN-2Ae" firstAttribute="leading" secondItem="AFl-hy-cfj" secondAttribute="leading" constant="13" id="lQy-Fo-JwX"/>
+                                                <constraint firstAttribute="bottom" secondItem="hOq-UN-2Ae" secondAttribute="bottom" constant="13" id="slK-Jf-U5M"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -224,19 +235,20 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nE8-qh-OTg">
-                                                    <rect key="frame" x="13" y="21" width="36" height="21"/>
+                                                    <rect key="frame" x="13" y="13" width="36" height="37.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBZ-lA-JKd">
-                                                    <rect key="frame" x="320" y="16" width="30" height="30"/>
+                                                    <rect key="frame" x="320" y="17" width="30" height="30"/>
                                                 </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="nE8-qh-OTg" firstAttribute="centerY" secondItem="X2s-tT-W23" secondAttribute="centerY" id="KO3-A6-yCn"/>
                                                 <constraint firstAttribute="trailing" secondItem="YBZ-lA-JKd" secondAttribute="trailing" constant="25" id="Wvt-WV-KOB"/>
                                                 <constraint firstItem="nE8-qh-OTg" firstAttribute="leading" secondItem="X2s-tT-W23" secondAttribute="leading" constant="13" id="kJw-Co-F35"/>
+                                                <constraint firstAttribute="bottom" secondItem="nE8-qh-OTg" secondAttribute="bottom" constant="13" id="rLx-rn-ntS"/>
                                                 <constraint firstItem="YBZ-lA-JKd" firstAttribute="centerY" secondItem="X2s-tT-W23" secondAttribute="centerY" id="zj5-pD-NDd"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -253,7 +265,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Amq-Tt-zPO">
-                                                    <rect key="frame" x="13" y="21" width="36" height="21"/>
+                                                    <rect key="frame" x="13" y="12.5" width="36" height="38"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -268,6 +280,7 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Amq-Tt-zPO" firstAttribute="centerY" secondItem="Al6-Qp-UMc" secondAttribute="centerY" id="CRr-vj-6dH"/>
+                                                <constraint firstAttribute="bottom" secondItem="Amq-Tt-zPO" secondAttribute="bottom" constant="13" id="iCt-kH-ziY"/>
                                                 <constraint firstItem="Amq-Tt-zPO" firstAttribute="leading" secondItem="Al6-Qp-UMc" secondAttribute="leading" constant="13" id="qQL-sm-6bF"/>
                                                 <constraint firstAttribute="trailing" secondItem="DEb-Ge-GOq" secondAttribute="trailing" constant="25" id="rG4-uU-nu1"/>
                                                 <constraint firstItem="DEb-Ge-GOq" firstAttribute="centerY" secondItem="Al6-Qp-UMc" secondAttribute="centerY" id="wi4-V1-cb2"/>
@@ -283,6 +296,15 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mxP-Jd-Ylu" id="ReB-3U-gHG">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="63"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="See All" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GJR-0x-xCR">
+                                                    <rect key="frame" x="142" y="14" width="90" height="34"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
@@ -298,11 +320,13 @@
                     </view>
                     <navigationItem key="navigationItem" title="Filter" id="qmi-y6-G0u">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="nuO-vL-ZtN">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="onCancelButton:" destination="dcD-I3-8ON" id="GJ6-NY-qMf"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Search" id="UAa-jR-mIR">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="onSearchButton:" destination="dcD-I3-8ON" id="L7c-2k-Oyd"/>
                             </connections>
@@ -314,7 +338,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7kd-Ds-khX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4441.5" y="357.5"/>
+            <point key="canvasLocation" x="4440.8000000000002" y="356.67166416791605"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="1ow-pZ-1Wf">
@@ -324,6 +348,10 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="4CH-jw-Auc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.78823529411764703" green="0.023529411764705882" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -342,6 +370,10 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Qn-cj-mlh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.78823529411764703" green="0.023529411764705882" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -355,5 +387,7 @@
     </scenes>
     <resources>
         <image name="dropdownArrow" width="29" height="29"/>
+        <image name="offSwitchThumbImage" width="50" height="50"/>
+        <image name="yelpIcon" width="50" height="50"/>
     </resources>
 </document>

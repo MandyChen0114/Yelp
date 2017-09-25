@@ -15,7 +15,7 @@ import UIKit
 
 class CategorySwitchCell: UITableViewCell {
 
-  @IBOutlet weak var onSwitch: UISwitch!
+  @IBOutlet weak var onSwitch: DesignableSwitch!
   @IBOutlet weak var switchLabel: UILabel!
   
   weak var delegate:CategorySwitchCellDelegate?
@@ -23,6 +23,7 @@ class CategorySwitchCell: UITableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     
+    onSwitch.thumbTintColor = UIColor.init(patternImage: UIImage(named: "yelpIcon")!)
     onSwitch.addTarget(self, action: #selector(CategorySwitchCell.switchValueChanged), for: UIControlEvents.valueChanged)
     
   }

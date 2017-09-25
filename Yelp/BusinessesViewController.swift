@@ -9,7 +9,7 @@
 import UIKit
 import AFNetworking
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchResultsUpdating {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchResultsUpdating, UIScrollViewDelegate {
   
   let DEFAULT_DEAL = false
   let DEFAULT_DISTANCE_ROW_INDEX = 0
@@ -22,7 +22,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
   var pageOffSet = 0
   let distanceMeterMap = [0, 0.3 * 1609.34, 1609.34, 5 * 1609.34 , 20 * 1609.34]
   var searchController: UISearchController!
-  
+  var isMoreDataLoading = false
+  var loadingMoreView:InfiniteScrollActivityView?
 
   
   @IBOutlet weak var tableView: UITableView!
@@ -34,8 +35,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     tableView.dataSource = self
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 120
+    tableView.setContentOffset(CGPoint.zero, animated: false)
     
     initSearchBar()
+    initInfiniteScroll()
     
     search(term: "", sort: nil, categories: nil, deals: nil, distance: nil)
   }
@@ -66,10 +69,20 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     currSearch.sort = sort ?? YelpSortMode.bestMatched
     currSearch.deals = deals ?? false
     currSearch.distance = distance ?? 0
-
+    currSearch.category = categories ?? [String]()
+    
     Business.searchWithTerm(term: term, sort: sort, categories: categories, deals: deals, distance: distance, offset: pageOffSet) { (businesses: [Business]?, error:Error?) -> Void in
-      self.businesses = businesses
+      if self.pageOffSet > 0 && (businesses?.count)! > 0 {
+        for business in businesses! {
+          self.businesses.append(business)
+        }
+        
+      } else {
+        self.businesses = businesses
+      }
+      self.isMoreDataLoading = false
       self.tableView.reloadData()
+      self.loadingMoreView!.stopAnimating()
     }
   }
 
@@ -87,6 +100,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
   }
   
   func updateSearchResults(for searchController: UISearchController) {
+    pageOffSet = 0
     if let keyword = searchController.searchBar.text {
       Business.searchWithTerm(term: keyword, completion: { (businesses:[Business]?, error: Error?) in
         self.businesses = businesses
@@ -97,6 +111,37 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
   
   }
 
+  // MARK: - Infinite Scrolling
+  
+  func initInfiniteScroll() {
+    // Set up Infinite Scroll loading indicator
+    let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+    loadingMoreView = InfiniteScrollActivityView(frame: frame)
+    loadingMoreView!.isHidden = true
+    tableView.addSubview(loadingMoreView!)
+  }
+  
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if (!isMoreDataLoading) {
+      let scrollViewContentHeight = tableView.contentSize.height
+      let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+      
+      if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
+        isMoreDataLoading = true
+        
+        let frame = CGRect(x:0,y: tableView.contentSize.height, width: tableView.bounds.size.width, height:InfiniteScrollActivityView.defaultHeight)
+        
+        loadingMoreView?.frame = frame
+        loadingMoreView!.startAnimating()
+        
+        pageOffSet += 20
+        
+        search(term: currSearch.term, sort: currSearch.sort, categories: currSearch.category, deals: currSearch.deals, distance: currSearch.distance)
+      }
+    }
+  }
+  
+  
   // MARK: - Navigation
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -110,6 +155,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
   }
 
   func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+    pageOffSet = 0
+    tableView.setContentOffset(CGPoint.zero, animated: false)
     let categories = filters["categories"] as? [String]
     let deal = filters["deal"] as? Bool
     let distanceIndex = filters["distance"] as? Int

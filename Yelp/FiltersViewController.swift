@@ -26,6 +26,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   
   var isDistanceExpanded = false
   var isSortByExpanded = false
+  var isCategoryExpanded = false
   
   let uncheckedImage = UIImage(named: "uncheckedBox")
   let checkedImage = UIImage(named: "checkedBox")
@@ -102,10 +103,22 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     return section == SORT_BY_SECTION_INDEX && !isSortByExpanded
   }
 
+  func isCategoryCollapsed(section: Int) -> Bool {
+    return section == CATEGORY_SECTION_INDEX && !isCategoryExpanded
+  }
+
   func isCheckBoxCell(section: Int) -> Bool {
     return section == DISTANCE_SECTION_INDEX || section == SORT_BY_SECTION_INDEX
   }
 
+  func isSelectedCheckBoxCell(indexPath: IndexPath) -> Bool {
+    return (DISTANCE_SECTION_INDEX == indexPath.section && distanceStates.selectedRowIndex == indexPath.row) || (SORT_BY_SECTION_INDEX == indexPath.section && sortByStates.selectedRowIndex == indexPath.row)
+  }
+  
+  func isSeeAllCategoryCell(indexPath: IndexPath) -> Bool {
+    return isCategoryCollapsed(section: indexPath.section) && indexPath.row == 3
+  }
+  
   func getLabelByIndexPath(section: Int, row: Int) -> String {
     return (sections[section]["rowLabel"] as! [String])[row]
   }
@@ -113,6 +126,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if isDistanceCollapsed(section: section) || isSortByCollapsed(section: section) {
       return 1
+    } else if isCategoryCollapsed(section: section){
+      return 4
     }
     return sections[section]["rowNum"] as! Int
   }
@@ -148,7 +163,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         cell.label.text = getLabelByIndexPath(section: indexPath.section, row: indexPath.row)
         cell.checkboxDelegate = self
         
-        if distanceStates.selectedRowIndex == indexPath.row {
+        if isSelectedCheckBoxCell(indexPath: indexPath) {
           cell.button.setImage(checkedImage, for: UIControlState.normal)
         } else {
           cell.button.setImage(uncheckedImage, for: UIControlState.normal)
@@ -157,12 +172,25 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
 
       }
     } else if indexPath.section == CATEGORY_SECTION_INDEX {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "CategorySwitchCell", for: indexPath) as! CategorySwitchCell
-      cell.switchLabel.text = categories[indexPath.row]["name"]
-      cell.delegate = self
-      cell.onSwitch.isOn = categorySwitchStates[indexPath.row] ?? false
-      
-      return cell
+      if isCategoryExpanded || (!isCategoryExpanded && indexPath.row != 3) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategorySwitchCell", for: indexPath) as! CategorySwitchCell
+        cell.switchLabel.text = categories[indexPath.row]["name"]
+        cell.delegate = self
+        cell.onSwitch.isOn = categorySwitchStates[indexPath.row] ?? false
+        return cell
+      } else {
+        let cell = UITableViewCell()
+        let seeAllLabel = UILabel(frame: CGRect(x: 0, y: 0, width: cell.frame.size.width, height: cell.frame.size.height))
+        let seeAllLabelAttributes : [String: Any] = [
+          NSForegroundColorAttributeName: UIColor.darkGray,
+          NSFontAttributeName: UIFont(name: "Helvetica", size: 16.0)! ]
+        seeAllLabel.attributedText = NSAttributedString( string: "See All" , attributes: seeAllLabelAttributes )
+        seeAllLabel.textAlignment = .center
+        
+        cell.addSubview(seeAllLabel)
+        return cell
+      }
+
       
     } else {
       let cell = UITableViewCell()
@@ -182,6 +210,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
     } else if indexPath.section == SORT_BY_SECTION_INDEX {
       isSortByExpanded = !isSortByExpanded
+      tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
+    } else if isSeeAllCategoryCell(indexPath: indexPath) {
+      isCategoryExpanded = !isCategoryExpanded
       tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
     }
   }
